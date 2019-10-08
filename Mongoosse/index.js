@@ -46,19 +46,11 @@ async function getCars(){
     console.log(cars)
 }
 
-
-createCar()
-getCountCar()
-getCars()
-/*
-//deleteCar('5d65517567d6f6d093db5921')
-
 async function deleteCar(id){
     const result = await Car.deleteOne({_id: id})
     console.log(result)
 }
 
-//updateFirstCar('5d668384f0f182db6052fc05')
 
 async function updateFirstCar(id){
     const result = await Car.update(
@@ -74,7 +66,16 @@ async function updateFirstCar(id){
 
 }
 
-//updateCar('5d65509f91dbabd080b7671a')
+async function updateCar(id){
+    const car = await Car.findById(id)
+    if(!car) return
+
+    car.company = 'Mercedes'
+    car.model = 'Clase A'
+
+    const result = await car.save()
+    console.log(result)
+}
 
 async function updateCar(id){
     const car = await Car.findById(id)
@@ -87,30 +88,39 @@ async function updateCar(id){
     console.log(result)
 }
 
-//getPaginationCars()
-
-async function getPaginationCars(){
-    const pageNumber = 1
-    const pageSize = 2
-
+async function getFilterPriceAndOrCars(){
     const cars = await Car
         .find()
-        .skip((pageNumber-1)*pageSize)
-        .limit(pageSize)
-
-        console.log(cars)
+        .and([{company: 'Audi'},{model:'X3'}])
+        .or([{company: 'BMW'},{model:'X2'}])
+    console.log(cars)
 }
+
+
+/*
+createCar()
+getCountCar()
+getCars()
+
+deleteCar('5d65517567d6f6d093db5921')
+
+
+
+//updateFirstCar('5d668384f0f182db6052fc05')
+
+
+
+//updateCar('5d65509f91dbabd080b7671a')
+
+
+
+//getPaginationCars()
+
+ 
 
 
 //getFilterPriceAndOrCars()
 
-async function getFilterPriceAndOrCars(){
-    const cars = await Car
-        .find()
-        //.and([{company: 'Audi'},{model:'X3'}])
-        .or([{company: 'Audi'},{model:'X3'}])
-    console.log(cars)
-}
 
 //getFilterPriceInNinCars()
 
