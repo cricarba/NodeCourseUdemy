@@ -6,8 +6,17 @@ mongoose.connect('mongodb://FutMatch:FutMatch@cluster0-shard-00-00-fhdw3.mongodb
 const carSchema = new mongoose.Schema({
     company: String,
     model: String,
-    price: Number,
-    year: Number,
+    price: {
+            type: Number,
+            required: function(){
+                    return this.sold;
+                }
+            },
+    year: {type:Number,
+        min:2000,
+        max:203,
+        get: y => Math.round(y)
+    },
     sold: Boolean,
     extras: [String],
     date: {type: Date, default: Date.now}
