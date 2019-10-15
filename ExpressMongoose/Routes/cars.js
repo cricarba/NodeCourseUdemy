@@ -1,5 +1,7 @@
 const express = require('express')
 const car = require('../Models/carModel')
+const {user} = require('../Models/userModel')
+
 const router = express.Router()
 const { check, validationResult } = require('express-validator');
 
@@ -25,26 +27,30 @@ router.get('/:id', async (req, res) =>{
  
 
 router.post('/', async (req,res)=>{
-
+    try
+    {
+       
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     };
+   const usuario = user.findById(req.body.userId);
+   if(!usuario)
+   return res.status(400).send('No existe el usuario');
 
     var coche = new car({
         company: req.body.company,
         model : req.body.model,
         year: req.body.year,
         sold: req.body.sold,
-        price: req.body.price
+        price: req.body.price, 
+        user : usuario
     });
-    try
-    {
-        var result = await coche.save();
+    var result = await coche.save();
 
         res.status(201).send(result);
-    }catch{
-        res.status(500).send("error");
+    }catch(error){
+        res.status(500).send(error.message);
     }
    
 })
@@ -74,7 +80,7 @@ router.put('/:id',[
     res.status(204).send(carUpdate);
 })
 
-router.DELETE('/:id',[
+router.delete('/:id',[
     check('company').isLength({min:3}),
     check('model').isLength({min:3})    
 ],

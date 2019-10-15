@@ -1,8 +1,11 @@
  
 const mongoose = require('mongoose')
- 
+const {userSchema} = require('./userModel')
 
 const carSchema = new mongoose.Schema({
+    user: {
+        type: userSchema
+    },
     company: { type: String,
                minlength: 3},
     model: { type: String,
@@ -21,7 +24,8 @@ const carSchema = new mongoose.Schema({
     sold: Boolean,
     extras: [String],
     date: {type: Date, default: Date.now}
+    
 })
 
-const Car = mongoose.model('Car', carSchema);
-module.exports = Car;
+const car = mongoose.model('Car', carSchema);
+module.exports = car;
