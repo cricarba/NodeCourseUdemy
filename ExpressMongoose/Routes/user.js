@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const express = require('express')
 const {user} = require('../Models/userModel')
 const router = express.Router()
@@ -8,7 +10,6 @@ router.get('/', async (req, res) =>{
     res.send(users);
  })
  
-
 router.get('/list', async (req, res) =>{
    const users = await user.find();
    res.send(users);
@@ -23,7 +24,6 @@ router.get('/:id', async (req, res) =>{
     res.send(userr);
  })
  
-
 router.post('/',[ check('Name').isLength({min:3}),check('password').isLength({min:6})],
  async (req,res)=>{
 
@@ -34,24 +34,27 @@ router.post('/',[ check('Name').isLength({min:3}),check('password').isLength({mi
  
  let uniqueUser = user.findOne({email : req.body.email})
  if(!uniqueUser) return res.status(400).send('usuario ya existe');
-
+ //crear el salteo
+ const salt = await bcrypt.genSalt(10);
+ //encriptamos el password
+ const hashPassword = await  bcrypt.hash(req.body.password, salt);
     var usuario = new user({
         Name: req.body.Name,
         email : req.body.email,
         IsCustomer: req.body.IsCustomer,
-        password:  req.body.password    
+        password:  hashPassword    
     });
     try
     {
         var result = await usuario.save();
-
-        res.status(201).send(result);
+        const jwToken = jwt.sign({_id: uniqueUser._id, name : uniqueUser.name}, 'IdToken')                               
+        
+        res.status(201).header('Authorization', jwToken).send(result);
     }catch{
         res.status(500).send("error");
     }
    
 })
-
 
 router.put('/:id',[
     check('Name').isLength({min:3}),     

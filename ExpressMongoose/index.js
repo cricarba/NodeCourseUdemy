@@ -5,13 +5,15 @@ const app = express()
 const car = require('./Routes/cars')
 const moto = require('./Routes/moto')
 const user = require('./Routes/user')
+const auth = require('./Routes/auth')
+
 //const date = require('./middelwareDate')
 
 app.use(express.json())
 app.use('/api/cars/', car)
 app.use('/api/moto/', moto)
 app.use('/api/user/', user)
-
+app.use('/api/auth/', auth)
 
 //app.use(date)
 //middelware que se ejecuta cuando se hace peticiones a esa URL
