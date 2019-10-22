@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const express = require('express')
 const {user} = require('../Models/userModel')
@@ -47,7 +46,7 @@ router.post('/',[ check('Name').isLength({min:3}),check('password').isLength({mi
     try
     {
         var result = await usuario.save();
-        const jwToken = jwt.sign({_id: uniqueUser._id, name : uniqueUser.name}, 'IdToken')                               
+        const jwToken = user.GenerateJWT()                               
         
         res.status(201).header('Authorization', jwToken).send(result);
     }catch{

@@ -1,16 +1,18 @@
 const express = require('express')
 const car = require('../Models/carModel')
+const auth = require('./middelware/jwt')
+const admin = require('./middelware/admin')
+
 const {user} = require('../Models/userModel')
 
 const router = express.Router()
 const { check, validationResult } = require('express-validator');
-
-router.get('/', async (req, res) =>{
+/*Ejecuta los middelware []*/ 
+router.get('/',[auth,admin], async (req, res) =>{
     const cars = await car.find();
     res.send(cars);
  })
  
-
 router.get('/list', async (req, res) =>{
    const cars = await car.find();
    res.send(cars);
@@ -24,9 +26,9 @@ router.get('/:id', async (req, res) =>{
 
     res.send(carr);
  })
- 
 
-router.post('/', async (req,res)=>{
+ /*auth = el middelware que valida el jwt*/
+router.post('/',auth, async (req,res)=>{
     try
     {
        
@@ -54,7 +56,6 @@ router.post('/', async (req,res)=>{
     }
    
 })
-
 
 router.put('/:id',[
     check('company').isLength({min:3}),

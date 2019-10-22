@@ -7,8 +7,6 @@ const moto = require('./Routes/moto')
 const user = require('./Routes/user')
 const auth = require('./Routes/auth')
 
-//const date = require('./middelwareDate')
-
 app.use(express.json())
 app.use('/api/cars/', car)
 app.use('/api/moto/', moto)

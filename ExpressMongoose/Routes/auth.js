@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const express = require('express')
 const {user} = require('../Models/userModel')
@@ -18,7 +17,11 @@ router.post('/',[ check('emal').isLength({min:3}),
         //buscar usuario
         let uniqueUser = user.findOne({email : req.body.email})
         if(!uniqueUser) return res.status(400).send('usuario No existe');
-         const jwToken = jwt.sign({_id: uniqueUser._id, name : uniqueUser.name}, 'IdToken')                                 
+
+        const validPassword = await bcrypt.compare(req.body.password, uniqueUser.password);
+        if(!validPassword)   return res.status(400).send('usuario o contraseña incorrectos');
+        //generar token
+         const jwToken = user.GenerateJWT();                           
         
         res.status(201).send(jwToken);
     }catch{
